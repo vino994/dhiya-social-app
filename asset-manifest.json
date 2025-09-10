@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/dhiya-social-app/static/css/main.e1941658.css",
+    "main.js": "/dhiya-social-app/static/js/main.463ae3fb.js",
+    "static/media/bootstrap-icons.woff?": "/dhiya-social-app/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
+    "static/media/bootstrap-icons.woff2?": "/dhiya-social-app/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
+    "index.html": "/dhiya-social-app/index.html",
+    "main.e1941658.css.map": "/dhiya-social-app/static/css/main.e1941658.css.map",
+    "main.463ae3fb.js.map": "/dhiya-social-app/static/js/main.463ae3fb.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e1941658.css",
+    "static/js/main.463ae3fb.js"
+  ]
+}
