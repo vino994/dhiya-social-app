@@ -1,0 +1,55 @@
+/* NAVBAR with Glassmorphism */
+.navbar {
+  background: rgba(255, 255, 255, 0.25) !important; /* frosted glass */
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* On hover / scroll */
+.navbar:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* Brand container */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Icon */
+.brand-icon {
+  font-size: 1.8rem;
+  color: #ff6a00; /* orange accent */
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Text – subtle gradient for professional look */
+.brand-text {
+  background: linear-gradient(90deg, #ff6a00, #ee0979);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  transition: transform 0.3s ease;
+}
+
+/* Hover effect: light scale + accent color shift */
+.brand-logo:hover .brand-text {
+  transform: scale(1.06);
+}
+
+.brand-logo:hover .brand-icon {
+  color: #ee0979;
+  transform: scale(1.1);
+}

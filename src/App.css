@@ -8,20 +8,29 @@ body, #root {
 
 /* NAVBAR */
 .navbar {
-  background: linear-gradient(90deg, #ff6a00, #ee0979) !important;
-}
-.navbar .navbar-brand, 
-.navbar .nav-link {
+  background: rgba(255, 255, 255, 0.2) !important; /* semi-transparent */
+  backdrop-filter: blur(10px) saturate(150%); /* blur effect */
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   color: white !important;
-  font-weight: 600;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
-.navbar .nav-link:hover {
-  color: #ffe082 !important;
+
+/* On scroll or hover, darken slightly for depth */
+.navbar:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* HERO */
 .hero-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   background: rgba(255, 255, 255, 0.2) !important; /* semi-transparent */
+  backdrop-filter: blur(10px) saturate(150%); /* blur effect */
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
   color: #fff;
   border-radius: 20px;
   padding: 60px 30px;
