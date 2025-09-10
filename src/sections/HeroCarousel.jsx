@@ -1,55 +1,59 @@
-import React from 'react';
-import { Carousel, Container } from 'react-bootstrap';
-import hero1 from '../assets/rainy.jpg';
-import hero2 from '../assets/snow.jpg';
-import hero3 from '../assets/sunny.jpg';
+// src/components/HeroCarousel.js
+import React from "react";
+import { Carousel, Container } from "react-bootstrap";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../contexts/ThemeContext";
+import hero1 from "../assets/rainy.jpg"; // ✅ replace with your image
+import hero2 from "../assets/snow.jpg"; // ✅ replace with your image
+import hero3 from "../assets/sunny.jpg";
+const heroAnim = {
+  hidden: { opacity: 0, scale: 0.97, y: 20 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  exit: { opacity: 0, scale: 0.97, y: -20, transition: { duration: 0.3 } },
+};
 
 export default function HeroCarousel() {
+  const { theme } = useTheme();
+
   return (
-    <Container className="hero-gradient rounded-3 p-3">
-      <Carousel indicators={true} controls={true} interval={3000}>
-        {/* Slide 1 */}
-        <Carousel.Item>
-          <img
-            className="d-block w-100 rounded-3"
-            src={hero1}
-            alt="Discover colorful styles"
-            style={{ height: '400px', objectFit: 'cover' }}
-          />
-          <Carousel.Caption>
-            <h1 className="fw-bold">Discover colorful styles</h1>
-            <p>Animated, responsive & stylish ecommerce demo</p>
-          </Carousel.Caption>
-        </Carousel.Item>
+    <Container className="hero-gradient rounded-3 p-0 overflow-hidden">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={theme}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          variants={heroAnim}
+        >
+          <Carousel fade interval={4000}>
+            {/* Slide 1 */}
+            <Carousel.Item>
+              <img
+                className="d-block w-100 hero-img"
+                src={hero1}
+                alt="First slide"
+              />
+              <Carousel.Caption className={`carousel-text ${theme}`}>
+                <h1 className="display-5 fw-bold">Discover colorful styles</h1>
+                <p>Animated, responsive & stylish ecommerce demo</p>
+              </Carousel.Caption>
+            </Carousel.Item>
 
-        {/* Slide 2 */}
-        <Carousel.Item>
-          <img
-            className="d-block w-100 rounded-3"
-            src={hero2}
-            alt="Fast checkout"
-            style={{ height: '400px', objectFit: 'cover' }}
-          />
-          <Carousel.Caption>
-            <h1 className="fw-bold">Fast checkout</h1>
-            <p>Simple flow, mock payments — ready to replace with Stripe</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-
-        {/* Slide 3 */}
-        <Carousel.Item>
-          <img
-            className="d-block w-100 rounded-3"
-            src={hero3}
-            alt="Shop anywhere"
-            style={{ height: '400px', objectFit: 'cover' }}
-          />
-          <Carousel.Caption>
-            <h1 className="fw-bold">Shop anywhere</h1>
-            <p>Responsive, mobile-first design</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      </Carousel>
+            {/* Slide 2 */}
+            <Carousel.Item>
+              <img
+                className="d-block w-100 hero-img"
+                src={hero2}
+                alt="Second slide"
+              />
+              <Carousel.Caption className={`carousel-text ${theme}`}>
+                <h1 className="display-5 fw-bold">Fast checkout</h1>
+                <p>Simple flow, mock payments — ready to replace with Stripe</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+          </Carousel>
+        </motion.div>
+      </AnimatePresence>
     </Container>
   );
 }

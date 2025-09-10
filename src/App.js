@@ -10,6 +10,7 @@ import Signup from "./auth/Signup";
 import Dashboard from "./pages/Dashboard";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
+import ThemeToggle from "./components/ThemeToggle"; // ✅ new import
 
 export default function App() {
   return (
@@ -37,9 +38,12 @@ export default function App() {
         {/* Footer */}
         <footer className="app-footer text-center">
           <div className="container">
-            © {new Date().getFullYear()} E-Shop — Built for business • Privacy • Terms
+            © {new Date().getFullYear()} Dhiya Store — Built for business • Privacy • Terms
           </div>
         </footer>
+
+        {/* Floating Theme Toggle */}
+        <ThemeToggle />
       </div>
     </AuthProvider>
   );
