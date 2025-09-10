@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/dhiya-social-app/static/css/main.82b8b5da.css",
-    "main.js": "/dhiya-social-app/static/js/main.17781695.js",
+    "main.css": "/dhiya-social-app/static/css/main.d0ae024b.css",
+    "main.js": "/dhiya-social-app/static/js/main.b22de6a2.js",
     "static/media/rainy.jpg": "/dhiya-social-app/static/media/rainy.62dabd471b79f268975d.jpg",
     "static/media/snow.jpg": "/dhiya-social-app/static/media/snow.cac5b38a9350845b4140.jpg",
     "static/media/sunny.jpg": "/dhiya-social-app/static/media/sunny.956941080f7e8bf3c0fb.jpg",
     "static/media/bootstrap-icons.woff?": "/dhiya-social-app/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
     "static/media/bootstrap-icons.woff2?": "/dhiya-social-app/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
     "index.html": "/dhiya-social-app/index.html",
-    "main.82b8b5da.css.map": "/dhiya-social-app/static/css/main.82b8b5da.css.map",
-    "main.17781695.js.map": "/dhiya-social-app/static/js/main.17781695.js.map"
+    "main.d0ae024b.css.map": "/dhiya-social-app/static/css/main.d0ae024b.css.map",
+    "main.b22de6a2.js.map": "/dhiya-social-app/static/js/main.b22de6a2.js.map"
   },
   "entrypoints": [
-    "static/css/main.82b8b5da.css",
-    "static/js/main.17781695.js"
+    "static/css/main.d0ae024b.css",
+    "static/js/main.b22de6a2.js"
   ]
 }
