@@ -36,13 +36,13 @@ export default function Signup(){
       <motion.div initial="hidden" animate="show" variants={cardAnim}>
         <Card style={{background: 'transparent', border: 'none'}}>
           <Card.Body>
-            <h3 className="mb-3" style={{color:'#fff'}}>Create your account</h3>
+            <h3 className="mb-3">Create your account</h3>
 
             {err && <div className="alert alert-danger">{err}</div>}
 
             <Form onSubmit={submit} noValidate>
               <Form.Group className="mb-3" controlId="signupName">
-                <Form.Label className="form-label" style={{color:'#fff'}}>Full name</Form.Label>
+                <Form.Label className="form-label">Full name</Form.Label>
                 <Form.Control
                   placeholder="Your full name"
                   value={name}
@@ -52,7 +52,7 @@ export default function Signup(){
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="signupEmail">
-                <Form.Label className="form-label" style={{color:'#fff'}}>Email</Form.Label>
+                <Form.Label className="form-label">Email</Form.Label>
                 <Form.Control
                   type="email"
                   placeholder="you@example.com"
@@ -63,7 +63,7 @@ export default function Signup(){
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="signupPassword">
-                <Form.Label className="form-label" style={{color:'#fff'}}>Password</Form.Label>
+                <Form.Label className="form-label">Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Create a password"

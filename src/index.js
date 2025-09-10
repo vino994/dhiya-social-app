@@ -9,16 +9,18 @@ import './App.css';
 import App from './App';
 import AuthProvider from './contexts/AuthProvider';
 import { CartProvider } from './hooks/useCart';
-
+import { ThemeProvider } from "./contexts/ThemeContext";
 const root = createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <HashRouter>
-      <AuthProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </HashRouter>
   </React.StrictMode>
 );

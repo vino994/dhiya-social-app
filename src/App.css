@@ -136,3 +136,106 @@ body, #root {
 
 /* button small tweak */
 .btn-gradient { cursor: pointer; }
+/* ===== LIGHT THEME ===== */
+.theme-light {
+  background: #f9f9f9;
+  color: #111;
+}
+.theme-light .navbar {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.theme-light .navbar .nav-link,
+.theme-light .brand-text {
+  color: #111 !important;
+}
+.theme-light .card,
+.theme-light .checkout-container,
+.theme-light .auth-container,
+.theme-light .dashboard-section {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  color: #111;
+}
+
+/* ===== DARK THEME ===== */
+.theme-dark {
+  background: #0e0e0e;
+  color: #f5f5f5;
+}
+.theme-dark .navbar {
+  background: rgba(20, 20, 20, 0.6) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.theme-dark .navbar .nav-link,
+.theme-dark .brand-text {
+  color: #fff !important;
+}
+.theme-dark .card,
+.theme-dark .checkout-container,
+.theme-dark .auth-container,
+.theme-dark .dashboard-section {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+/* Smooth transition when switching themes */
+.theme-light, .theme-dark {
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Shared auth form styling */
+.form-heading {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.form-label {
+  font-weight: 600;
+}
+
+/* Light mode */
+.theme-light .auth-container,
+.theme-light .checkout-container,
+.theme-light .dashboard-section {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #111;
+}
+.theme-light .form-heading,
+.theme-light .form-label {
+  color: #111;
+}
+.theme-light .form-control {
+  background: rgba(0,0,0,0.04);
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.theme-light .form-control::placeholder {
+  color: rgba(0,0,0,0.5);
+}
+
+/* Dark mode */
+.theme-dark .auth-container,
+.theme-dark .checkout-container,
+.theme-dark .dashboard-section {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.theme-dark .form-heading,
+.theme-dark .form-label {
+  color: #fff;
+}
+.theme-dark .form-control {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.theme-dark .form-control::placeholder {
+  color: rgba(255,255,255,0.6);
+}

@@ -35,13 +35,13 @@ export default function Login(){
       <motion.div initial="hidden" animate="show" variants={cardAnim}>
         <Card style={{background: 'transparent', border: 'none'}}>
           <Card.Body>
-            <h3 className="mb-3" style={{color:'#fff'}}>Welcome back</h3>
+            <h3 className="mb-3">Welcome back</h3>
 
             {err && <div className="alert alert-danger">{err}</div>}
 
             <Form onSubmit={submit} noValidate>
               <Form.Group className="mb-3" controlId="loginEmail">
-                <Form.Label className="form-label" style={{color:'#fff'}}>Email address</Form.Label>
+                <Form.Label className="form-label">Email address</Form.Label>
                 <Form.Control
                   type="email"
                   placeholder="you@example.com"
@@ -52,7 +52,7 @@ export default function Login(){
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="loginPassword">
-                <Form.Label className="form-label" style={{color:'#fff'}}>Password</Form.Label>
+                <Form.Label className="form-label">Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter your password"

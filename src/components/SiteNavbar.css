@@ -1,55 +1,112 @@
-/* NAVBAR with Glassmorphism */
+/* GLOBAL BACKGROUND */
+body, #root {
+  margin: 0;
+  min-height: 100vh;
+  background: #0e0e0e; /* deep black */
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #f5f5f5; /* light text */
+}
+
+/* NAVBAR (dark glassmorphism) */
 .navbar {
-  background: rgba(255, 255, 255, 0.25) !important; /* frosted glass */
+  background: rgba(20, 20, 20, 0.6) !important;
   backdrop-filter: blur(12px) saturate(160%);
   -webkit-backdrop-filter: blur(12px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
 }
 
-/* On hover / scroll */
 .navbar:hover {
-  background: rgba(255, 255, 255, 0.35) !important;
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.12);
+  background: rgba(30, 30, 30, 0.7) !important;
 }
 
-/* Brand container */
-.brand-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 1.6rem;
-  text-decoration: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 1rem;
-  transition: all 0.3s ease;
-}
-
-/* Icon */
-.brand-icon {
-  font-size: 1.8rem;
-  color: #ff6a00; /* orange accent */
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-/* Text – subtle gradient for professional look */
+/* Brand text */
 .brand-text {
-  background: linear-gradient(90deg, #ff6a00, #ee0979);
+  background: linear-gradient(90deg, #ffffff, #cccccc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
-  transition: transform 0.3s ease;
 }
 
-/* Hover effect: light scale + accent color shift */
-.brand-logo:hover .brand-text {
-  transform: scale(1.06);
+/* HERO */
+.hero-gradient {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 20px;
+  padding: 60px 30px;
+  text-align: center;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
 }
 
-.brand-logo:hover .brand-icon {
-  color: #ee0979;
-  transform: scale(1.1);
+/* PRODUCT SECTION */
+.product-section {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* PRODUCT CARDS (glassmorphism) */
+.card {
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+.card-title {
+  font-weight: 700;
+  color: #fff;
+}
+.card .btn {
+  border-radius: 50px;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: none;
+}
+.card .btn:hover {
+  background: #ddd;
+}
+
+/* CHECKOUT & AUTH */
+.checkout-container, .auth-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 40px;
+  border-radius: 20px;
+  color: #fff;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+.form-control {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+}
+.form-control::placeholder { color: rgba(255,255,255,0.6); }
+
+/* DASHBOARD */
+.dashboard-section {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 40px;
+  border-radius: 20px;
+  color: #fff;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
