@@ -1,27 +1,21 @@
+// src/pages/Checkout.jsx
 import React, { useMemo, useState } from 'react';
 import { Container, Form, Button, Row, Col, Image, Table, InputGroup } from 'react-bootstrap';
 import { useCart } from '../hooks/useCart';
 import { motion } from 'framer-motion';
 
-/*
-  NOTE:
-  - This file includes a small PRODUCTS lookup so we can display cart items.
-  - If you maintain a central products file, import that instead and remove the local PRODUCTS below.
-*/
-
+/* PRODUCTS lookup (local demo) */
 const PRODUCTS = [
   { id: 'p1', title: 'Aurora Sneakers', price: 59.99, img: 'https://picsum.photos/seed/p1/300/200' },
   { id: 'p2', title: 'Nebula Jacket', price: 129.99, img: 'https://picsum.photos/seed/p2/300/200' },
   { id: 'p3', title: 'Lumen Watch', price: 199.99, img: 'https://picsum.photos/seed/p3/300/200' },
   { id: 'p4', title: 'Pixel Backpack', price: 79.99, img: 'https://picsum.photos/seed/p4/300/200' }
 ];
-
-/* small helper */
 function findProduct(id) {
   return PRODUCTS.find((p) => p.id === id) || { id, title: 'Unknown product', price: 0, img: '' };
 }
 
-/* Animated SVG cart (framer-motion) */
+/* AnimatedCartSVG (unchanged) */
 function AnimatedCartSVG({ animate = true }) {
   const float = {
     initial: { y: 0 },
@@ -34,15 +28,7 @@ function AnimatedCartSVG({ animate = true }) {
 
   return (
     <motion.div initial="initial" animate={animate ? 'animate' : 'initial'} variants={float} style={{ display: 'inline-block' }}>
-      <motion.svg
-        width="280"
-        height="220"
-        viewBox="0 0 280 220"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        {/* Background soft blob */}
+      <motion.svg width="280" height="220" viewBox="0 0 280 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <motion.path
           d="M40 140C20 100 10 70 60 48C110 26 170 40 214 74C258 108 260 178 210 195C160 212 80 180 40 140Z"
           fill="url(#g1)"
@@ -56,11 +42,7 @@ function AnimatedCartSVG({ animate = true }) {
           </linearGradient>
         </defs>
 
-        {/* Shopping bag */}
-        <motion.g
-          initial={{ y: 0, scale: 1 }}
-          animate={{ y: [0, -6, 0], rotate: [0, -2, 0], transition: { duration: 2.6, loop: Infinity } }}
-        >
+        <motion.g initial={{ y: 0, scale: 1 }} animate={{ y: [0, -6, 0], rotate: [0, -2, 0], transition: { duration: 2.6, loop: Infinity } }}>
           <rect x="80" y="58" width="120" height="96" rx="10" fill="#FFFFFF" stroke="#FF6A88" strokeWidth="3" />
           <path d="M96 58 C96 42, 132 36, 140 56" stroke="#FF6A88" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.9" />
           <path d="M200 58 C200 42, 164 36, 156 56" stroke="#FF6A88" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.9" />
@@ -68,7 +50,6 @@ function AnimatedCartSVG({ animate = true }) {
           <motion.circle cx="160" cy="100" r="4" fill="#FFC857" animate={{ y: [0, -4, 0] }} transition={{ duration: 3, loop: Infinity }} />
         </motion.g>
 
-        {/* wheels / accent */}
         <motion.circle cx="100" cy="170" r="6" fill="#3F51F0" opacity="0.95" animate={{ x: [0, 2, 0] }} transition={{ duration: 2, loop: Infinity }} />
         <motion.circle cx="180" cy="170" r="6" fill="#00C2A8" opacity="0.95" animate={{ x: [0, -2, 0] }} transition={{ duration: 2, loop: Infinity }} />
       </motion.svg>
@@ -77,22 +58,25 @@ function AnimatedCartSVG({ animate = true }) {
 }
 
 export default function Checkout() {
-  const { cart, remove, clear } = useCart(); // ✅ added remove
-  // customer details
+  const { cart, remove, clear } = useCart();
+
+  // step: 1 = details, 2 = payment/shipping, 3 = confirmation
   const [step, setStep] = useState(1);
+
+  // customer details (kept in state but not shown after "Continue")
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  // payment
+
+  // payment / misc
   const [card, setCard] = useState('');
-  // misc
   const [promo, setPromo] = useState('');
   const [appliedPromo, setAppliedPromo] = useState(null);
-  const [shippingMethod, setShippingMethod] = useState('standard'); // standard | express
+  const [shippingMethod, setShippingMethod] = useState('standard');
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4242';
 
-  // derived values
+  // derived cart items
   const items = useMemo(() => {
     const arr = [];
     Object.entries(cart || {}).forEach(([key, value]) => {
@@ -113,16 +97,27 @@ export default function Checkout() {
     e.preventDefault();
     const code = (promo || '').trim().toUpperCase();
     if (!code) return;
-    if (code === 'SAVE10') {
-      setAppliedPromo('SAVE10');
-    } else {
-      setAppliedPromo('INVALID');
+    if (code === 'SAVE10') setAppliedPromo('SAVE10');
+    else setAppliedPromo('INVALID');
+  }
+
+  /* ===== IMPORTANT: when the user clicks Continue we advance step to 2.
+     The personal fields are kept in state (fullName/email/address) but not rendered.
+     The user can "Edit details" from step 2 to go back and change them. ===== */
+  function handleContinueFromDetails(e) {
+    e.preventDefault();
+    // basic required validation
+    if (!fullName.trim() || !email.trim() || !address.trim()) {
+      alert('Please fill name, email and address before continuing.');
+      return;
     }
+    setStep(2);
+    // do NOT display the personal fields anywhere after this
   }
 
   async function placeOrder() {
     if (!fullName || !email || !address) {
-      alert('Please fill name, email and address before placing order.');
+      alert('Missing customer details — please complete them first.');
       setStep(1);
       return;
     }
@@ -147,7 +142,7 @@ export default function Checkout() {
         return;
       }
 
-      alert('Could not create Stripe session');
+      alert('Could not create Stripe session (server did not return url)');
     } catch (err) {
       console.error('Stripe create session failed', err);
       alert('Payment initialization failed: ' + (err.message || err));
@@ -160,119 +155,75 @@ export default function Checkout() {
         {/* LEFT column */}
         <Col lg={6} className="pt-2">
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <h3 className="fw-bold text-white mb-2">Checkout</h3>
-            <div className="small-muted" style={{ color: 'rgba(255,255,255,0.85)' }}>
-              Secure • Fast • Friendly
-            </div>
+            <h3 className="fw-bold mb-2">Checkout</h3>
+          
           </div>
 
-          {/* Step 1: Customer details */}
+          {/* Step 1: Customer details (shown only while step === 1) */}
           {step === 1 && (
-            <Form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
+            <Form onSubmit={handleContinueFromDetails}>
               <Form.Group className="mb-3" controlId="custName">
-                <Form.Label className="text-white">Full name</Form.Label>
-                <Form.Control
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Your name"
-                  required
-                />
+                <Form.Label>Full name</Form.Label>
+                <Form.Control value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" required />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="custEmail">
-                <Form.Label className="text-white">Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                />
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="custPhone">
-                <Form.Label className="text-white">Phone</Form.Label>
-                <Form.Control
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 9380334317"
-                />
+                <Form.Label>Phone</Form.Label>
+                <Form.Control value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 938..." />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="custAddress">
-                <Form.Label className="text-white">Shipping address</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Street, City, State, PIN"
-                  required
-                />
+                <Form.Label>Shipping address</Form.Label>
+                <Form.Control as="textarea" rows={3} value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, City, State, PIN" required />
               </Form.Group>
 
               <div className="d-flex gap-2">
-                <Button variant="light" onClick={() => { setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>
-                  Clear
-                </Button>
-                <Button type="submit" className="btn-gradient">
-                  Continue to payment
-                </Button>
+                <Button variant="light" onClick={() => { setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>Clear</Button>
+                <Button type="submit" className="btn-gradient">Continue</Button>
               </div>
             </Form>
           )}
 
-          {/* Step 2: Payment & shipping */}
+          {/* Step 2: Payment & shipping (shown when step === 2) */}
           {step === 2 && (
             <Form onSubmit={(e) => { e.preventDefault(); placeOrder(); }}>
-              <Form.Group className="mb-3" controlId="shipMethod">
-                <Form.Label className="text-white">Shipping method</Form.Label>
+              {/* Provide an 'Edit details' button so user can go back if needed */}
+              <div className="mb-3 d-flex justify-content-between align-items-center">
                 <div>
-                  <Form.Check
-                    inline
-                    label={`Standard — $${shippingMethod === 'standard' ? shippingCost.toFixed(2) : '5.00'}`}
-                    name="ship"
-                    type="radio"
-                    id="ship-standard"
-                    checked={shippingMethod === 'standard'}
-                    onChange={() => setShippingMethod('standard')}
-                  />
-                  <Form.Check
-                    inline
-                    label={`Express — $${shippingMethod === 'express' ? shippingCost.toFixed(2) : '12.00'}`}
-                    name="ship"
-                    type="radio"
-                    id="ship-express"
-                    checked={shippingMethod === 'express'}
-                    onChange={() => setShippingMethod('express')}
-                  />
+                  <strong>Payment & shipping</strong>
+                  <div className="small text-muted">You will not see name/email fields here. Click Edit to change.</div>
+                </div>
+                <div>
+                  <Button variant="outline-secondary" size="sm" onClick={() => setStep(1)}>Edit details</Button>
+                </div>
+              </div>
+
+              <Form.Group className="mb-3" controlId="shipMethod">
+                <Form.Label>Shipping method</Form.Label>
+                <div>
+                  <Form.Check inline label={`Standard — $${shippingMethod === 'standard' ? shippingCost.toFixed(2) : '5.00'}`} name="ship" type="radio" id="ship-standard" checked={shippingMethod === 'standard'} onChange={() => setShippingMethod('standard')} />
+                  <Form.Check inline label={`Express — $${shippingMethod === 'express' ? shippingCost.toFixed(2) : '12.00'}`} name="ship" type="radio" id="ship-express" checked={shippingMethod === 'express'} onChange={() => setShippingMethod('express')} />
                 </div>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="promo">
-                <Form.Label className="text-white">Promo code</Form.Label>
+                <Form.Label>Promo code</Form.Label>
                 <InputGroup>
-                  <Form.Control
-                    placeholder="Enter code (e.g. SAVE10)"
-                    value={promo}
-                    onChange={(e) => setPromo(e.target.value)}
-                  />
-                  <Button variant="outline-light" onClick={applyPromo}>
-                    Apply
-                  </Button>
+                  <Form.Control placeholder="Enter code (e.g. SAVE10)" value={promo} onChange={(e) => setPromo(e.target.value)} />
+                  <Button variant="outline-light" onClick={applyPromo}>Apply</Button>
                 </InputGroup>
-                {appliedPromo === 'INVALID' && <div style={{ color: '#ffe6e6', marginTop: 8 }}>Invalid promo code</div>}
-                {appliedPromo === 'SAVE10' && <div style={{ color: '#e6ffe8', marginTop: 8 }}>Promo applied: 10% (max $10)</div>}
+                {appliedPromo === 'INVALID' && <div style={{ color: '#ff6b6b', marginTop: 8 }}>Invalid promo code</div>}
+                {appliedPromo === 'SAVE10' && <div style={{ color: '#5eead4', marginTop: 8 }}>Promo applied: 10% (max $10)</div>}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="card">
-                <Form.Label className="text-white">Card (mock)</Form.Label>
-                <Form.Control
-                  value={card}
-                  onChange={(e) => setCard(e.target.value)}
-                  placeholder="4242 4242 4242 4242"
-                  required
-                />
+                <Form.Label>Card (mock)</Form.Label>
+                <Form.Control value={card} onChange={(e) => setCard(e.target.value)} placeholder="4242 4242 4242 4242" required />
               </Form.Group>
 
               <div className="d-flex gap-2">
@@ -286,26 +237,26 @@ export default function Checkout() {
           {step === 3 && (
             <div className="mt-3">
               <div className="alert alert-success">✅ Thanks — your order is confirmed (mock).</div>
-              <Button className="btn-gradient" onClick={() => { setStep(1); setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>
+              <Button className="btn-gradient" onClick={() => { setStep(1); setFullName(''); setEmail(''); setPhone(''); setAddress(''); clear(); }}>
                 Place another order
               </Button>
             </div>
           )}
         </Col>
 
-        {/* RIGHT column */}
+        {/* RIGHT column: Order summary ONLY (never shows personal details) */}
         <Col lg={6} className="pt-2">
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
             <AnimatedCartSVG />
           </div>
 
           <div style={{ background: 'rgba(255,255,255,0.06)', padding: 14, borderRadius: 12 }}>
-            <h5 style={{ color: '#fff', marginBottom: 10 }}>Order summary</h5>
+            <h5 style={{ marginBottom: 10 }}>Order summary</h5>
 
             {items.length === 0 ? (
-              <div className="text-white small-muted-strong">Your cart is empty.</div>
+              <div className="small-muted-strong">Your cart is empty.</div>
             ) : (
-              <Table borderless size="sm" responsive style={{ color: '#fff' }}>
+              <Table borderless size="sm" responsive>
                 <tbody>
                   {items.map((it) => (
                     <tr key={it.id}>
@@ -320,9 +271,7 @@ export default function Checkout() {
                         ${(it.price * it.qty).toFixed(2)}
                       </td>
                       <td style={{ verticalAlign: 'middle', textAlign: 'right' }}>
-                        <Button variant="outline-danger" size="sm" onClick={() => remove(it.id)}>
-                          ✕
-                        </Button>
+                        <Button variant="outline-danger" size="sm" onClick={() => remove(it.id)}>✕</Button>
                       </td>
                     </tr>
                   ))}

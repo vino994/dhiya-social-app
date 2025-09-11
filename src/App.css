@@ -229,7 +229,7 @@ body.theme-dark::before {
 
 /* Labels & Inputs */
 .form-label { font-weight: 600; }
-.theme-light .form-label { color:#111; }
+.theme-light .form-label { color:#111 !important; }
 .theme-dark .form-label { color:#fff; }
 .theme-light .form-control {
   background: rgba(0,0,0,0.04);
@@ -248,13 +248,29 @@ body.theme-dark::before {
   border-radius: 50px;
   font-weight: 600;
   padding: 10px 18px;
-  transition: all 0.3s ease;
+  transition: all 0.22s ease;
   cursor: pointer;
+  border: none;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.theme-light .btn-gradient { background: #111; color: #fff; }
-.theme-light .btn-gradient:hover { background: #333; }
-.theme-dark .btn-gradient { background: #fff; color: #000; }
-.theme-dark .btn-gradient:hover { background: #ddd; }
+.theme-light .btn-gradient {
+  background: linear-gradient(90deg, #9b7d45 0%, #d16533 100%) !important;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(15,98,254,0.12);
+}
+.theme-light .btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(15,98,254,0.14);
+  filter: brightness(1.03);
+}
+.theme-light .btn-gradient:active {
+  transform: translateY(0);
+  filter: brightness(0.98);
+}
 
 /* Headings inside cards */
 .theme-light .auth-container h3,
@@ -274,6 +290,37 @@ body.theme-dark::before {
 .theme-dark .dashboard-section .card,
 .theme-dark .dashboard-section .card:hover {
   transition: box-shadow 0.28s ease, transform 0.18s ease;
+}
+.theme-dark .btn-gradient {
+  background: linear-gradient(90deg, #00d4ff 0%, #2aa5ff 60%, #0066ff 100%);
+  color: #041025; /* dark text gives crisp contrast on light-ish gradient */
+  box-shadow: 0 8px 28px rgba(0,102,255,0.08);
+}
+.theme-dark .btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 44px rgba(0,150,255,0.12), 0 0 18px rgba(34,200,255,0.06);
+  filter: brightness(1.02);
+}
+.theme-dark .btn-gradient:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+.card .btn, .card .btn:hover {
+  border-radius: 50px;
+  font-weight: 600;
+  padding: 8px 16px;
+}
+
+/* Outline-secondary adjustments for better contrast */
+.theme-light .btn-outline-secondary {
+  color: #111;
+  background: transparent;
+  border-color: rgba(187, 106, 106, 0.12);
+}
+.theme-dark .btn-outline-secondary {
+  color: #fff;
+  background: transparent;
+  border-color: rgba(255,255,255,0.12);
 }
 
 .theme-dark .dashboard-section .card:hover {

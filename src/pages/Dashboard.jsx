@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Container, Row, Col, Card, Form, Button, ListGroup, Image } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthProvider";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "../hooks/useCart";
 
 /* small PRODUCTS sample — replace with your actual products if needed */
@@ -18,7 +18,7 @@ export default function Dashboard() {
   const cartHook = useCart?.();
   const addToCart = cartHook?.add ?? (() => {});
 
-  // Local form state
+  // local form state
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -27,7 +27,7 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
 
-  // Recent orders (localStorage)
+  // recent orders (localStorage)
   const [orders, setOrders] = useState(() => {
     try {
       const raw = localStorage.getItem("orders");
@@ -37,7 +37,7 @@ export default function Dashboard() {
     }
   });
 
-  // editing state: show form when true. If user has no name, start editing.
+  // editing state: if user has no name at start, open editing automatically
   const [editing, setEditing] = useState(() => {
     try {
       const saved = localStorage.getItem("auth_user");
@@ -51,14 +51,13 @@ export default function Dashboard() {
 
   const fileRef = useRef(null);
 
-  // Sync local state with the `user` from AuthProvider
+  // sync local fields with auth user
   useEffect(() => {
     setName(user?.name || "");
     setPhone(user?.phone || "");
     setAddress(user?.address || "");
     setAvatar(user?.avatar || null);
 
-    // If user has any saved profile, default to view (not editing)
     if (user && (user.name || user.phone || user.address || user.avatar)) {
       setEditing(false);
     } else {
@@ -66,6 +65,7 @@ export default function Dashboard() {
     }
   }, [user]);
 
+  // hidden file -> set avatar preview as data URL
   function handleAvatarFileChange(e) {
     const f = e.target.files?.[0];
     if (!f) return;
@@ -74,6 +74,7 @@ export default function Dashboard() {
     reader.readAsDataURL(f);
   }
 
+  // Save profile: also write lastUpdated so saved compact card can show it
   async function saveProfile(e) {
     e?.preventDefault();
     setMessage(null);
@@ -89,19 +90,15 @@ export default function Dashboard() {
 
     setSaving(true);
     try {
-      const res = await updateProfile({
-        name: name.trim(),
-        phone: phone.trim(),
-        address: address.trim(),
-        avatar: avatar,
-      });
+      // include lastUpdated so it is persisted into the current `user` (and localStorage via AuthProvider)
+      const payload = { name: name.trim(), phone: phone.trim(), address: address.trim(), avatar, lastUpdated: Date.now() };
+      const res = await updateProfile(payload);
 
-      // Accept both implicit success and explicit { ok: true } / { ok: false }
       if (res && res.ok === false) {
         setMessage({ type: "danger", text: res.message || "Failed to save profile." });
       } else {
         setMessage({ type: "success", text: "Profile saved." });
-        setEditing(false); // hide the form after successful save
+        setEditing(false); // collapse form to compact view
       }
     } catch {
       setMessage({ type: "danger", text: "Failed to save profile." });
@@ -142,6 +139,15 @@ export default function Dashboard() {
     }
   }
 
+  // motion variants for collapse/fade
+  const panelVariants = {
+    hidden: { opacity: 0, y: 8 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -6 },
+  };
+
+  const lastUpdatedText = user?.lastUpdated ? new Date(user.lastUpdated).toLocaleString() : null;
+
   return (
     <Container className="dashboard-section" style={{ maxWidth: 1100 }}>
       {/* Profile header */}
@@ -154,16 +160,10 @@ export default function Dashboard() {
                   <Image src={avatar} alt="avatar" roundedCircle style={{ width: 96, height: 96, objectFit: "cover", border: "2px solid rgba(255,255,255,0.06)" }} />
                 ) : (
                   <div style={{
-                    width: 96,
-                    height: 96,
-                    borderRadius: 999,
+                    width: 96, height: 96, borderRadius: 999,
                     background: "linear-gradient(135deg,#2b2b2b,#4b4b4b)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#fff",
-                    fontWeight: 700,
-                    fontSize: 24
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "#fff", fontWeight: 700, fontSize: 24
                   }}>
                     {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
                   </div>
@@ -202,107 +202,114 @@ export default function Dashboard() {
         </Col>
       </Row>
 
-      {/* Main row: edit form (or condensed saved-card) + orders */}
+      {/* Main row: form (editing) or compact saved card + orders */}
       <Row className="g-4">
         <Col lg={6}>
-          <motion.div whileHover={{ translateY: -6 }}>
-            {/* If editing: show full form. Otherwise show a compact summary card + Edit button */}
+          <AnimatePresence mode="wait">
             {editing ? (
-              <Card className="p-3">
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center mb-3">
-                    <Card.Title className="mb-0">Edit profile</Card.Title>
-                  </div>
+              <motion.div key="form" initial="hidden" animate="visible" exit="exit" variants={panelVariants}>
+                <Card className="p-3">
+                  <Card.Body>
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <Card.Title className="mb-0">Edit profile</Card.Title>
+                    </div>
 
-                  {message && <div className={`alert alert-${message.type}`}>{message.text}</div>}
+                    {message && <div className={`alert alert-${message.type}`}>{message.text}</div>}
 
-                  <Form onSubmit={saveProfile}>
-                    <Form.Group className="mb-3" controlId="profileAvatar">
-                      <Form.Label className="form-label">Avatar</Form.Label>
-                      <div className="d-flex align-items-center gap-3">
-                        <div style={{ width: 72, height: 72 }}>
-                          {avatar ? (
-                            <Image src={avatar} alt="preview" roundedCircle style={{ width: 72, height: 72, objectFit: "cover" }} />
-                          ) : (
-                            <div style={{
-                              width: 72, height: 72, borderRadius: 999,
-                              background: "rgba(255,255,255,0.04)",
-                              display: "flex", alignItems: "center", justifyContent: "center", color: "#fff"
-                            }}>
-                              {(name || user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                    <Form onSubmit={saveProfile}>
+                      <Form.Group className="mb-3" controlId="profileAvatar">
+                        <Form.Label className="form-label">Avatar</Form.Label>
+                        <div className="d-flex align-items-center gap-3">
+                          <div style={{ width: 72, height: 72 }}>
+                            {avatar ? (
+                              <Image src={avatar} alt="preview" roundedCircle style={{ width: 72, height: 72, objectFit: "cover" }} />
+                            ) : (
+                              <div style={{
+                                width: 72, height: 72, borderRadius: 999, background: "rgba(255,255,255,0.04)",
+                                display: "flex", alignItems: "center", justifyContent: "center", color: "#fff"
+                              }}>
+                                {(name || user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+
+                          <div>
+                            {/* styled button that opens the hidden file input */}
+                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                              <Button onClick={() => fileRef.current?.click()}>Change avatar</Button>
+                              {avatar && <Button variant="outline-secondary" onClick={() => { setAvatar(null); if (fileRef.current) fileRef.current.value = ""; }}>Remove</Button>}
                             </div>
-                          )}
+                            <input ref={fileRef} type="file" accept="image/*" onChange={handleAvatarFileChange} style={{ display: "none" }} />
+                            <div className="small   mt-1">PNG/JPG only — preview shown immediately (client-side only)</div>
+                          </div>
                         </div>
+                      </Form.Group>
 
-                        <div>
-                          <input type="file" accept="image/*" ref={fileRef} onChange={handleAvatarFileChange} />
-                          <div className="small   mt-1">PNG/JPG only — preview shown immediately (client-side only)</div>
-                        </div>
+                      <Form.Group className="mb-3" controlId="profileName">
+                        <Form.Label className="form-label">Full name</Form.Label>
+                        <Form.Control value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" />
+                      </Form.Group>
+
+                      <Form.Group className="mb-3" controlId="profilePhone">
+                        <Form.Label className="form-label">Phone</Form.Label>
+                        <Form.Control value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 98..." />
+                      </Form.Group>
+
+                      <Form.Group className="mb-3" controlId="profileAddress">
+                        <Form.Label className="form-label">Address</Form.Label>
+                        <Form.Control as="textarea" rows={3} value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, City, State, PIN" />
+                      </Form.Group>
+
+                      <div className="d-flex gap-2">
+                        <Button type="submit" className="btn-gradient" disabled={saving}>{saving ? "Saving…" : "Save profile"}</Button>
+                        <Button variant="outline-secondary" onClick={handleResetToSaved}>Reset</Button>
+                        <Button variant="outline-danger" onClick={() => { handleResetToSaved(); setEditing(false); }}>Cancel</Button>
                       </div>
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="profileName">
-                      <Form.Label className="form-label">Full name</Form.Label>
-                      <Form.Control value={name} onChange={(e) => setName(e.target.value)} placeholder="Your full name" />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="profilePhone">
-                      <Form.Label className="form-label">Phone</Form.Label>
-                      <Form.Control value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 98..." />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="profileAddress">
-                      <Form.Label className="form-label">Address</Form.Label>
-                      <Form.Control as="textarea" rows={3} value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, City, State, PIN" />
-                    </Form.Group>
-
-                    <div className="d-flex gap-2">
-                      <Button type="submit" className="btn-gradient" disabled={saving}>{saving ? "Saving…" : "Save profile"}</Button>
-                      <Button variant="outline-secondary" onClick={handleResetToSaved}>Reset</Button>
-                      <Button variant="outline-danger" onClick={() => { handleResetToSaved(); setEditing(false); }}>Cancel</Button>
-                    </div>
-                  </Form>
-                </Card.Body>
-              </Card>
+                    </Form>
+                  </Card.Body>
+                </Card>
+              </motion.div>
             ) : (
-              <Card className="p-3">
-                <Card.Body className="d-flex flex-column gap-3">
-                  <div>
-                    <h5 className="mb-1">Profile saved</h5>
-                    <div className="small  ">Your profile is saved — click Edit to update it.</div>
-                  </div>
-
-                  <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                    <div style={{ width: 72, height: 72 }}>
-                      {avatar ? (
-                        <Image src={avatar} alt="avatar" roundedCircle style={{ width: 72, height: 72, objectFit: "cover" }} />
-                      ) : (
-                        <div style={{
-                          width: 72, height: 72, borderRadius: 999,
-                          background: "rgba(255,255,255,0.04)",
-                          display: "flex", alignItems: "center", justifyContent: "center", color: "#fff"
-                        }}>
-                          {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
-                        </div>
-                      )}
+              <motion.div key="compact" initial="hidden" animate="visible" exit="exit" variants={panelVariants}>
+                <Card className="p-3">
+                  <Card.Body className="d-flex flex-column gap-3">
+                    <div>
+                      <h5 className="mb-1">Profile saved</h5>
+                      <div className="small  ">Your profile is saved — click Edit to update it.</div>
                     </div>
 
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700 }}>{user?.name || user?.email}</div>
-                      <div className="small  ">
-                        {user?.phone && <div><strong>Phone:</strong> {user.phone}</div>}
-                        {user?.address && <div><strong>Address:</strong> {user.address}</div>}
+                    <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                      <div style={{ width: 72, height: 72 }}>
+                        {avatar ? (
+                          <Image src={avatar} alt="avatar" roundedCircle style={{ width: 72, height: 72, objectFit: "cover" }} />
+                        ) : (
+                          <div style={{
+                            width: 72, height: 72, borderRadius: 999, background: "rgba(255,255,255,0.04)",
+                            display: "flex", alignItems: "center", justifyContent: "center", color: "#fff"
+                          }}>
+                            {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700 }}>{user?.name || user?.email}</div>
+                        <div className="small  ">
+                          {user?.phone && <div><strong>Phone:</strong> {user.phone}</div>}
+                          {user?.address && <div><strong>Address:</strong> {user.address}</div>}
+                          {lastUpdatedText && <div className="mt-1">Last updated: <small className=" ">{lastUpdatedText}</small></div>}
+                        </div>
+                      </div>
+
+                      <div>
+                        <Button onClick={() => setEditing(true)}>Edit profile</Button>
                       </div>
                     </div>
-
-                    <div>
-                      <Button onClick={() => setEditing(true)}>Edit profile</Button>
-                    </div>
-                  </div>
-                </Card.Body>
-              </Card>
+                  </Card.Body>
+                </Card>
+              </motion.div>
             )}
-          </motion.div>
+          </AnimatePresence>
         </Col>
 
         <Col lg={6}>
