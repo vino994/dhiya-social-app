@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Image } from 'react-bootstrap';
 import { useCart } from '../hooks/useCart';
+import { useAuth } from '../contexts/AuthProvider'; // ✅ import auth
 
 const PRODUCTS = [
   { id: 'p1', title: 'Aurora Sneakers', price: 59.99, img: 'https://picsum.photos/seed/p1/900/600' },
@@ -14,8 +15,9 @@ export default function ProductPage() {
   const { id } = useParams();
   const nav = useNavigate();
   const { add } = useCart();
+  const { user } = useAuth();
 
-  const product = PRODUCTS.find(p => p.id === id);
+  const product = PRODUCTS.find((p) => p.id === id);
 
   if (!product) {
     return (
@@ -29,6 +31,16 @@ export default function ProductPage() {
     );
   }
 
+  function handleBuy() {
+    if (!user) {
+      // not logged in → redirect to login
+      nav("/login", { state: { from: `/product/${product.id}` } });
+      return;
+    }
+    add(product.id);
+    nav("/checkout");
+  }
+
   return (
     <Container className="product-section">
       <Row>
@@ -39,9 +51,11 @@ export default function ProductPage() {
         <Col md={6}>
           <h2>{product.title}</h2>
           <p className="lead">${product.price}</p>
-          <p className="small-muted">Details about the product — lightweight, durable materials, great for daily use.</p>
+          <p className="small-muted">
+            Details about the product — lightweight, durable materials, great for daily use.
+          </p>
           <div style={{ marginTop: 20 }}>
-            <Button className="btn-gradient" onClick={() => { add(product.id); nav('/checkout'); }}>
+            <Button className="btn-gradient" onClick={handleBuy}>
               Buy now
             </Button>
           </div>

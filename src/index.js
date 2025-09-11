@@ -5,9 +5,9 @@ import { HashRouter } from 'react-router-dom'; // <-- use HashRouter for GH Page
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './App.css';
-
+import { AuthProvider } from './contexts/AuthProvider';
 import App from './App';
-import AuthProvider from './contexts/AuthProvider';
+
 import { CartProvider } from './hooks/useCart';
 import { ThemeProvider } from "./contexts/ThemeContext";
 const root = createRoot(document.getElementById('root'));

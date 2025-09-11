@@ -9,7 +9,7 @@ body, #root {
 
 /* NAVBAR (dark glassmorphism) */
 .navbar {
-  background: rgba(20, 20, 20, 0.6) !important;
+  background: #d6d30b99 !important;
   backdrop-filter: blur(12px) saturate(160%);
   -webkit-backdrop-filter: blur(12px) saturate(160%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -22,10 +22,9 @@ body, #root {
 
 /* Brand text */
 .brand-text {
-  background: linear-gradient(90deg, #ffffff, #cccccc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  transition: color 0.3s ease, background 0.3s ease;
 }
 
 /* HERO */
@@ -109,4 +108,20 @@ body, #root {
   border-radius: 20px;
   color: #fff;
   box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+.theme-dark .brand-text {
+  background: linear-gradient(90deg, #e94545, #df9535);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Solid black for light theme */
+.theme-light .brand-text {
+  color: #111; /* black for visibility on light navbar */
+}
+.theme-dark .brand-icon {
+  color: #ff9a44; /* bright orange for dark theme */
+}
+.theme-light .brand-icon {
+  color: #111; /* dark gray/black for light theme */
 }

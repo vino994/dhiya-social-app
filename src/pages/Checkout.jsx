@@ -18,14 +18,18 @@ const PRODUCTS = [
 
 /* small helper */
 function findProduct(id) {
-  return PRODUCTS.find(p => p.id === id) || { id, title: 'Unknown product', price: 0, img: '' };
+  return PRODUCTS.find((p) => p.id === id) || { id, title: 'Unknown product', price: 0, img: '' };
 }
 
 /* Animated SVG cart (framer-motion) */
 function AnimatedCartSVG({ animate = true }) {
   const float = {
     initial: { y: 0 },
-    animate: { y: [0, -8, 0], rotate: [0, -3, 0], transition: { duration: 3, loop: Infinity, ease: 'easeInOut' } }
+    animate: {
+      y: [0, -8, 0],
+      rotate: [0, -3, 0],
+      transition: { duration: 3, loop: Infinity, ease: 'easeInOut' },
+    },
   };
 
   return (
@@ -73,7 +77,7 @@ function AnimatedCartSVG({ animate = true }) {
 }
 
 export default function Checkout() {
-  const { cart, clear } = useCart();
+  const { cart, remove, clear } = useCart(); // ✅ added remove
   // customer details
   const [step, setStep] = useState(1);
   const [fullName, setFullName] = useState('');
@@ -86,16 +90,14 @@ export default function Checkout() {
   const [promo, setPromo] = useState('');
   const [appliedPromo, setAppliedPromo] = useState(null);
   const [shippingMethod, setShippingMethod] = useState('standard'); // standard | express
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4242';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4242';
 
   // derived values
   const items = useMemo(() => {
-    // cart is expected shape: { productId: qty, ... } or { productId: { productId, qty } } depending on your hook.
-    // Support both shapes:
     const arr = [];
     Object.entries(cart || {}).forEach(([key, value]) => {
-      const qty = typeof value === 'number' ? value : (value.qty ?? 0);
-      const productId = typeof value === 'number' ? key : (value.productId ?? key);
+      const qty = typeof value === 'number' ? value : value.qty ?? 0;
+      const productId = typeof value === 'number' ? key : value.productId ?? key;
       const p = findProduct(productId);
       if (qty > 0) arr.push({ ...p, qty });
     });
@@ -111,7 +113,6 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4242'
     e.preventDefault();
     const code = (promo || '').trim().toUpperCase();
     if (!code) return;
-    // example promo: SAVE10 => 10% up to $10
     if (code === 'SAVE10') {
       setAppliedPromo('SAVE10');
     } else {
@@ -119,133 +120,180 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4242'
     }
   }
 
-// inside src/pages/Checkout.jsx (replace placeOrder function)
-async function placeOrder() {
-  // client validation
-  if (!fullName || !email || !address) {
-    alert('Please fill name, email and address before placing order.');
-    setStep(1);
-    return;
-  }
-
-  // Build items array to send to server
-  const sendItems = items.map(it => ({ id: it.id, name: it.title, price: it.price, qty: it.qty }));
-
-  try {
-    const resp = await fetch('http://localhost:4242/create-checkout-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: sendItems,
-        customer: { fullName, email, phone, address }
-      })
-    });
-
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error || 'Server error');
-
-    // redirect to Stripe hosted Checkout
-    if (data.url) {
-      window.location.href = data.url;
+  async function placeOrder() {
+    if (!fullName || !email || !address) {
+      alert('Please fill name, email and address before placing order.');
+      setStep(1);
       return;
     }
 
-    alert('Could not create Stripe session');
-  } catch (err) {
-    console.error('Stripe create session failed', err);
-    alert('Payment initialization failed: ' + (err.message || err));
+    const sendItems = items.map((it) => ({ id: it.id, name: it.title, price: it.price, qty: it.qty }));
+
+    try {
+      const resp = await fetch(`${BACKEND_URL}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: sendItems,
+          customer: { fullName, email, phone, address },
+        }),
+      });
+
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Server error');
+
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+
+      alert('Could not create Stripe session');
+    } catch (err) {
+      console.error('Stripe create session failed', err);
+      alert('Payment initialization failed: ' + (err.message || err));
+    }
   }
-}
-
-
-
 
   return (
     <Container className="checkout-container" style={{ maxWidth: 980 }}>
       <Row>
+        {/* LEFT column */}
         <Col lg={6} className="pt-2">
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <h3 className="fw-bold text-white mb-2">Checkout</h3>
-            <div className="small-muted" style={{ color: 'rgba(255,255,255,0.85)' }}>Secure • Fast • Friendly</div>
+            <div className="small-muted" style={{ color: 'rgba(255,255,255,0.85)' }}>
+              Secure • Fast • Friendly
+            </div>
           </div>
 
           {/* Step 1: Customer details */}
           {step === 1 && (
-            <Form onSubmit={e => { e.preventDefault(); setStep(2); }}>
+            <Form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
               <Form.Group className="mb-3" controlId="custName">
                 <Form.Label className="text-white">Full name</Form.Label>
-                <Form.Control value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Jane Doe" required />
+                <Form.Control
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Your name"
+                  required
+                />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="custEmail">
                 <Form.Label className="text-white">Email</Form.Label>
-                <Form.Control type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required />
+                <Form.Control
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="custPhone">
                 <Form.Label className="text-white">Phone</Form.Label>
-                <Form.Control value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 98765 43210" />
+                <Form.Control
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 9380334317"
+                />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="custAddress">
                 <Form.Label className="text-white">Shipping address</Form.Label>
-                <Form.Control as="textarea" rows={3} value={address} onChange={e => setAddress(e.target.value)} placeholder="Street, City, State, ZIP" required />
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Street, City, State, PIN"
+                  required
+                />
               </Form.Group>
 
               <div className="d-flex gap-2">
-                <Button variant="light" onClick={() => { setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>Clear</Button>
-                <Button type="submit" className="btn-gradient">Continue to payment</Button>
+                <Button variant="light" onClick={() => { setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>
+                  Clear
+                </Button>
+                <Button type="submit" className="btn-gradient">
+                  Continue to payment
+                </Button>
               </div>
             </Form>
           )}
 
           {/* Step 2: Payment & shipping */}
           {step === 2 && (
-            <>
-              <Form onSubmit={e => { e.preventDefault(); placeOrder(); }}>
-                <Form.Group className="mb-3" controlId="shipMethod">
-                  <Form.Label className="text-white">Shipping method</Form.Label>
-                  <div>
-                    <Form.Check inline label={`Standard — $${shippingMethod === 'standard' ? shippingCost.toFixed(2) : '5.00'}`} name="ship" type="radio" id="ship-standard"
-                      checked={shippingMethod === 'standard'} onChange={() => setShippingMethod('standard')} />
-                    <Form.Check inline label={`Express — $${shippingMethod === 'express' ? shippingCost.toFixed(2) : '12.00'}`} name="ship" type="radio" id="ship-express"
-                      checked={shippingMethod === 'express'} onChange={() => setShippingMethod('express')} />
-                  </div>
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="promo">
-                  <Form.Label className="text-white">Promo code</Form.Label>
-                  <InputGroup>
-                    <Form.Control placeholder="Enter code (e.g. SAVE10)" value={promo} onChange={e => setPromo(e.target.value)} />
-                    <Button variant="outline-light" onClick={applyPromo}>Apply</Button>
-                  </InputGroup>
-                  {appliedPromo === 'INVALID' && <div style={{ color: '#ffe6e6', marginTop: 8 }}>Invalid promo code</div>}
-                  {appliedPromo === 'SAVE10' && <div style={{ color: '#e6ffe8', marginTop: 8 }}>Promo applied: 10% (max $10)</div>}
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="card">
-                  <Form.Label className="text-white">Card (mock)</Form.Label>
-                  <Form.Control value={card} onChange={e => setCard(e.target.value)} placeholder="4242 4242 4242 4242" required />
-                </Form.Group>
-
-                <div className="d-flex gap-2">
-                  <Button variant="light" onClick={() => setStep(1)}>Back</Button>
-                  <Button type="submit" className="btn-gradient">Pay ${total.toFixed(2)}</Button>
+            <Form onSubmit={(e) => { e.preventDefault(); placeOrder(); }}>
+              <Form.Group className="mb-3" controlId="shipMethod">
+                <Form.Label className="text-white">Shipping method</Form.Label>
+                <div>
+                  <Form.Check
+                    inline
+                    label={`Standard — $${shippingMethod === 'standard' ? shippingCost.toFixed(2) : '5.00'}`}
+                    name="ship"
+                    type="radio"
+                    id="ship-standard"
+                    checked={shippingMethod === 'standard'}
+                    onChange={() => setShippingMethod('standard')}
+                  />
+                  <Form.Check
+                    inline
+                    label={`Express — $${shippingMethod === 'express' ? shippingCost.toFixed(2) : '12.00'}`}
+                    name="ship"
+                    type="radio"
+                    id="ship-express"
+                    checked={shippingMethod === 'express'}
+                    onChange={() => setShippingMethod('express')}
+                  />
                 </div>
-              </Form>
-            </>
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="promo">
+                <Form.Label className="text-white">Promo code</Form.Label>
+                <InputGroup>
+                  <Form.Control
+                    placeholder="Enter code (e.g. SAVE10)"
+                    value={promo}
+                    onChange={(e) => setPromo(e.target.value)}
+                  />
+                  <Button variant="outline-light" onClick={applyPromo}>
+                    Apply
+                  </Button>
+                </InputGroup>
+                {appliedPromo === 'INVALID' && <div style={{ color: '#ffe6e6', marginTop: 8 }}>Invalid promo code</div>}
+                {appliedPromo === 'SAVE10' && <div style={{ color: '#e6ffe8', marginTop: 8 }}>Promo applied: 10% (max $10)</div>}
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="card">
+                <Form.Label className="text-white">Card (mock)</Form.Label>
+                <Form.Control
+                  value={card}
+                  onChange={(e) => setCard(e.target.value)}
+                  placeholder="4242 4242 4242 4242"
+                  required
+                />
+              </Form.Group>
+
+              <div className="d-flex gap-2">
+                <Button variant="light" onClick={() => setStep(1)}>Back</Button>
+                <Button type="submit" className="btn-gradient">Pay ${total.toFixed(2)}</Button>
+              </div>
+            </Form>
           )}
 
           {/* Step 3: Confirmation */}
           {step === 3 && (
             <div className="mt-3">
-              <div className="alert alert-success">✅ Thanks — your order is confirmed (mock). Check console for order details.</div>
-              <Button className="btn-gradient" onClick={() => { setStep(1); setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>Place another order</Button>
+              <div className="alert alert-success">✅ Thanks — your order is confirmed (mock).</div>
+              <Button className="btn-gradient" onClick={() => { setStep(1); setFullName(''); setEmail(''); setPhone(''); setAddress(''); }}>
+                Place another order
+              </Button>
             </div>
           )}
         </Col>
 
-        {/* Right column: animated cart + order summary */}
+        {/* RIGHT column */}
         <Col lg={6} className="pt-2">
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
             <AnimatedCartSVG />
@@ -259,7 +307,7 @@ async function placeOrder() {
             ) : (
               <Table borderless size="sm" responsive style={{ color: '#fff' }}>
                 <tbody>
-                  {items.map(it => (
+                  {items.map((it) => (
                     <tr key={it.id}>
                       <td style={{ width: 64 }}>
                         <Image src={it.img} rounded style={{ width: 64, height: 48, objectFit: 'cover' }} />
@@ -268,7 +316,14 @@ async function placeOrder() {
                         <div style={{ fontWeight: 700 }}>{it.title}</div>
                         <div className="small-muted">{it.qty} × ${it.price.toFixed(2)}</div>
                       </td>
-                      <td style={{ verticalAlign: 'middle', textAlign: 'right', width: 86 }}>${(it.price * it.qty).toFixed(2)}</td>
+                      <td style={{ verticalAlign: 'middle', textAlign: 'right', width: 86 }}>
+                        ${(it.price * it.qty).toFixed(2)}
+                      </td>
+                      <td style={{ verticalAlign: 'middle', textAlign: 'right' }}>
+                        <Button variant="outline-danger" size="sm" onClick={() => remove(it.id)}>
+                          ✕
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -277,22 +332,22 @@ async function placeOrder() {
 
             <hr style={{ borderColor: 'rgba(255,255,255,0.06)' }} />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', marginBottom: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
               <div className="small-muted">Subtotal</div>
               <div className="fw-bold">${subtotal.toFixed(2)}</div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', marginBottom: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
               <div className="small-muted">Shipping</div>
               <div>${shippingCost.toFixed(2)}</div>
             </div>
             {promoDiscount > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', marginBottom: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                 <div className="small-muted">Promo</div>
                 <div>−${promoDiscount.toFixed(2)}</div>
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', fontSize: 18, marginTop: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 18, marginTop: 8 }}>
               <div className="fw-bold">Total</div>
               <div className="fw-bold">${total.toFixed(2)}</div>
             </div>

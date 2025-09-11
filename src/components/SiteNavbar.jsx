@@ -6,31 +6,18 @@ import { useTheme } from "../contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import "./SiteNavbar.css";
 
-const fadeAnim = {
-  hidden: { opacity: 0, y: -15, scale: 0.98 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
-  exit: { opacity: 0, y: -15, scale: 0.98, transition: { duration: 0.3 } },
-};
-
 export default function SiteNavbar() {
-  const { currentUser, logout } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const nav = useNavigate();
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={theme} // Re-animates on theme change
-        initial="hidden"
-        animate="show"
-        exit="exit"
-        variants={fadeAnim}
-      >
+    <AnimatePresence>
+      <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
         <Navbar expand="lg" className="shadow-sm">
           <Container>
-            {/* Brand */}
-            <Navbar.Brand as={Link} to="/" className="brand-logo d-flex align-items-center">
-              <i className="bi bi-bag-heart-fill me-2 brand-icon"></i>
+            <Navbar.Brand as={Link} to="/" className="brand-logo">
+              <i className="bi bi-bag-heart-fill me-2 brand-icon" aria-hidden="true"></i>
               <span className="brand-text">Dhiya Store</span>
             </Navbar.Brand>
 
@@ -40,9 +27,11 @@ export default function SiteNavbar() {
                 <Nav.Link as={Link} to="/">Home</Nav.Link>
                 <Nav.Link as={Link} to="/checkout">Cart</Nav.Link>
 
-                {currentUser ? (
+                {user ? (
                   <>
-                    <Nav.Link as={Link} to="/dashboard">{currentUser.name}</Nav.Link>
+                    {/* Dashboard link shows user's short name or email */}
+                    <Nav.Link as={Link} to="/dashboard">{user.name ? user.name : user.email}</Nav.Link>
+
                     <Button
                       variant="outline-secondary"
                       size="sm"
@@ -59,17 +48,8 @@ export default function SiteNavbar() {
                   </>
                 )}
 
-                {/* Theme toggle button */}
-                <Button
-                  variant="link"
-                  className="theme-toggle ms-3"
-                  onClick={toggleTheme}
-                >
-                  {theme === "light" ? (
-                    <i className="bi bi-moon-fill"></i>
-                  ) : (
-                    <i className="bi bi-sun-fill"></i>
-                  )}
+                <Button variant="link" className="ms-3" onClick={toggleTheme} aria-label="Toggle theme">
+                  {theme === "light" ? <i className="bi bi-moon-fill"></i> : <i className="bi bi-sun-fill"></i>}
                 </Button>
               </Nav>
             </Navbar.Collapse>
