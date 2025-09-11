@@ -1,18 +1,22 @@
 {
   "files": {
-    "main.css": "/dhiya-social-app/static/css/main.b6247651.css",
-    "main.js": "/dhiya-social-app/static/js/main.bd6c9e0b.js",
-    "static/media/rainy.jpg": "/dhiya-social-app/static/media/rainy.62dabd471b79f268975d.jpg",
-    "static/media/snow.jpg": "/dhiya-social-app/static/media/snow.cac5b38a9350845b4140.jpg",
-    "static/media/sunny.jpg": "/dhiya-social-app/static/media/sunny.956941080f7e8bf3c0fb.jpg",
+    "main.css": "/dhiya-social-app/static/css/main.91631899.css",
+    "main.js": "/dhiya-social-app/static/js/main.2e0934a3.js",
+    "static/media/t-11.png": "/dhiya-social-app/static/media/t-11.4280a102897ab65a0dd9.png",
     "static/media/bootstrap-icons.woff?": "/dhiya-social-app/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
     "static/media/bootstrap-icons.woff2?": "/dhiya-social-app/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
+    "static/media/t-3.webp": "/dhiya-social-app/static/media/t-3.37e017e4171881521ee8.webp",
+    "static/media/t-12.jpg": "/dhiya-social-app/static/media/t-12.ff03b26062cccabebeca.jpg",
+    "static/media/t-8.jpg": "/dhiya-social-app/static/media/t-8.51b40fdee9c8c82b53b5.jpg",
+    "static/media/t-4.webp": "/dhiya-social-app/static/media/t-4.8054c5e5ddc57e721660.webp",
+    "static/media/t-10.jpg": "/dhiya-social-app/static/media/t-10.00979ba77743dbd6d48e.jpg",
+    "static/media/t-9.webp": "/dhiya-social-app/static/media/t-9.09daa6803801871d136a.webp",
     "index.html": "/dhiya-social-app/index.html",
-    "main.b6247651.css.map": "/dhiya-social-app/static/css/main.b6247651.css.map",
-    "main.bd6c9e0b.js.map": "/dhiya-social-app/static/js/main.bd6c9e0b.js.map"
+    "main.91631899.css.map": "/dhiya-social-app/static/css/main.91631899.css.map",
+    "main.2e0934a3.js.map": "/dhiya-social-app/static/js/main.2e0934a3.js.map"
   },
   "entrypoints": [
-    "static/css/main.b6247651.css",
-    "static/js/main.bd6c9e0b.js"
+    "static/css/main.91631899.css",
+    "static/js/main.2e0934a3.js"
   ]
 }
