@@ -29,37 +29,38 @@ export default function App() {
       {/* Main content */}
       <div className="main-canvas">
         <main className="py-4">
-      <Routes>
-  {/* Home */}
-  <Route path="/" element={<Home />} />
-  
-  {/* Customize (with product ID param) */}
-  <Route path="/customize/:id" element={<TShirtCustomizer />} />
+          <Routes>
+            {/* Home */}
+            <Route path="/" element={<Home />} />
+            
+            {/* ✅ Customizer page */}
+            <Route path="/customizer" element={<TShirtCustomizer />} />
+            {/* ✅ Optional: Customizer with product ID */}
+            <Route path="/customizer/:id" element={<TShirtCustomizer />} />
 
-  {/* Products */}
-  <Route path="/products" element={<AllProducts />} />
-  <Route path="/product/:id" element={<ProductPage />} />
-  <Route path="/category/:category" element={<CategoryPage />} />
+            {/* Products */}
+            <Route path="/products" element={<AllProducts />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/category/:category" element={<CategoryPage />} />
 
-  {/* Auth */}
-  <Route path="/login" element={<Login />} />
-  <Route path="/signup" element={<Signup />} />
+            {/* Auth */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-  {/* Checkout */}
-  <Route path="/checkout" element={<Checkout />} />
-  <Route path="/checkout-success" element={<CheckoutSuccess />} />
-  <Route path="/checkout-cancel" element={<CheckoutCancel />} />
+            {/* Checkout */}
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout-success" element={<CheckoutSuccess />} />
+            <Route path="/checkout-cancel" element={<CheckoutCancel />} />
 
-  {/* Dashboard */}
-  <Route path="/dashboard" element={<Dashboard />} />
+            {/* Dashboard */}
+            <Route path="/dashboard" element={<Dashboard />} />
 
-  {/* Info pages */}
-  <Route path="/faq" element={<FAQ />} />
-  <Route path="/shipping" element={<Shipping />} />
-  <Route path="/privacy" element={<Privacy />} />
-  <Route path="/terms" element={<Terms />} />
-</Routes>
-
+            {/* Info pages */}
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
         </main>
       </div>
 

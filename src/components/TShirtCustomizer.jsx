@@ -244,7 +244,7 @@ export default function TShirtCustomizer({ productFromProps }) {
     setSelectedId(null);
   }
 
-  // ✅ Save design, fixed price 499
+  // ✅ Save design, fixed price ₹499
   function exportDesignAndAddToCart() {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -252,11 +252,11 @@ export default function TShirtCustomizer({ productFromProps }) {
 
     const metadata = {
       isCustom: true,
-      customDesign: dataUrl, // ✅ saved image
+      customDesign: dataUrl,
       baseColor: shirtColor,
       productId: "custom-tee",
       productTitle: "Custom T-shirt",
-      price: 499, // ✅ fixed price
+      price: 499,
     };
 
     try {
