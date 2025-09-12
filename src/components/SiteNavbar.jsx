@@ -26,7 +26,7 @@ export default function SiteNavbar() {
               <Nav>
                 <Nav.Link as={Link} to="/">Home</Nav.Link>
                 <Nav.Link as={Link} to="/checkout">Cart</Nav.Link>
-
+<Nav.Link as={Link} to="/customize/:id">Custom Design</Nav.Link>
                 {user ? (
                   <>
                     {/* Dashboard link shows user's short name or email */}
