@@ -80,6 +80,41 @@ body, #root {
 .card .btn:hover {
   background: #ddd;
 }
+/* Ensure toggler button and icon are visible in dark theme */
+.theme-dark .navbar-toggler {
+  border-color: rgba(255,255,255,0.18);
+  background: transparent;
+}
+
+/* Replace Bootstrap's default icon with a white one (SVG data URL) */
+.theme-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'>\
+      <path stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/>\
+    </svg>");
+}
+
+/* When the menu is expanded (mobile), make its background dark and links white */
+.theme-dark .navbar-collapse {
+  background: rgba(0,0,0,0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 12px; /* keep spacing when collapsed */
+}
+
+/* Nav links and buttons inside dark navbar */
+.theme-dark .navbar .nav-link,
+.theme-dark .navbar .nav-item,
+.theme-dark .navbar .btn,
+.theme-dark .navbar .btn-outline-secondary {
+  color: #fff !important;
+}
+
+/* Slightly brighten hover state for nav links */
+.theme-dark .navbar .nav-link:hover {
+  color: #dbeeff !important;
+}
 
 /* CHECKOUT & AUTH */
 .checkout-container, .auth-container {

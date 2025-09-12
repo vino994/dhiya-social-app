@@ -331,7 +331,7 @@ export default function Dashboard() {
                         </div>
                         <div style={{ textAlign: "right" }}>
                           <div style={{ fontWeight: 700 }}>${(o.total || 0).toFixed(2)}</div>
-                          <div className="small  ">Status: {o.status || "Delivered"}</div>
+                          <div className="small text-muted">Status: {o.status || "Delivered"}</div>
                         </div>
                       </ListGroup.Item>
                     ))}

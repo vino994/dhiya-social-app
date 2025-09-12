@@ -1,0 +1,74 @@
+.app-footer {
+  margin-top: 60px;
+  padding: 50px 0 20px;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(20, 20, 20, 0.5); /* dark glass */
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f1f1f1;
+  border-radius: 20px 20px 0 0;
+}
+
+.footer-heading {
+  font-weight: 700;
+  margin-bottom: 16px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1rem;
+}
+
+.footer-text {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #f1f1f1;
+  text-decoration: none;
+  opacity: 0.75;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  color: #ff7a59;
+}
+
+.footer-social {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.footer-social a {
+  font-size: 1.3rem;
+  color: #f1f1f1;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.footer-social a:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  color: #ff7a59;
+}
+
+.footer-divider {
+  margin: 30px 0;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.footer-bottom {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
