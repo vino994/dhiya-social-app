@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/dhiya-social-app/static/css/main.edb8ada9.css",
-    "main.js": "/dhiya-social-app/static/js/main.bd198621.js",
-    "static/media/t-11.png": "/dhiya-social-app/static/media/t-11.4280a102897ab65a0dd9.png",
+    "main.css": "/dhiya-social-app/static/css/main.cb4ca79b.css",
+    "main.js": "/dhiya-social-app/static/js/main.a68f8600.js",
+    "static/media/banner-3.gif": "/dhiya-social-app/static/media/banner-3.1ad8f4be517c8238bc23.gif",
+    "static/media/banner-2.gif": "/dhiya-social-app/static/media/banner-2.889723917686901ea5cb.gif",
+    "static/media/banner-1.gif": "/dhiya-social-app/static/media/banner-1.d0499f6a180db3d7ecd6.gif",
     "static/media/bootstrap-icons.woff?": "/dhiya-social-app/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
     "static/media/t-17.jpg": "/dhiya-social-app/static/media/t-17.d5667003f3b328754250.jpg",
     "static/media/bootstrap-icons.woff2?": "/dhiya-social-app/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
     "static/media/t-3.webp": "/dhiya-social-app/static/media/t-3.37e017e4171881521ee8.webp",
     "static/media/tshirt-1.png": "/dhiya-social-app/static/media/tshirt-1.66af54608f2ebc397920.png",
-    "static/media/t-12.jpg": "/dhiya-social-app/static/media/t-12.ff03b26062cccabebeca.jpg",
     "static/media/t-8.jpg": "/dhiya-social-app/static/media/t-8.51b40fdee9c8c82b53b5.jpg",
     "static/media/t-19.jpg": "/dhiya-social-app/static/media/t-19.adf272ffceb7ff86b849.jpg",
     "static/media/t-15.avif": "/dhiya-social-app/static/media/t-15.5445a273787d703e1599.avif",
     "static/media/t-4.webp": "/dhiya-social-app/static/media/t-4.8054c5e5ddc57e721660.webp",
-    "static/media/t-10.jpg": "/dhiya-social-app/static/media/t-10.00979ba77743dbd6d48e.jpg",
     "static/media/t-9.webp": "/dhiya-social-app/static/media/t-9.09daa6803801871d136a.webp",
     "index.html": "/dhiya-social-app/index.html",
-    "main.edb8ada9.css.map": "/dhiya-social-app/static/css/main.edb8ada9.css.map",
-    "main.bd198621.js.map": "/dhiya-social-app/static/js/main.bd198621.js.map"
+    "main.cb4ca79b.css.map": "/dhiya-social-app/static/css/main.cb4ca79b.css.map",
+    "main.a68f8600.js.map": "/dhiya-social-app/static/js/main.a68f8600.js.map"
   },
   "entrypoints": [
-    "static/css/main.edb8ada9.css",
-    "static/js/main.bd198621.js"
+    "static/css/main.cb4ca79b.css",
+    "static/js/main.a68f8600.js"
   ]
 }
